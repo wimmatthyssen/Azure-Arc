@@ -271,7 +271,6 @@ Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-e
 ## It can take up to 4 hours before any data will be available.
 
 # Save Log Analytics workspace from the managment subscription in a variable
-
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.SubscriptionId | Out-Null
