@@ -10,6 +10,7 @@ This script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (which is a requirement), otherwise the Azure PowerShell script will be exited.
 Suppress breaking change warning messages.
+Install Azure Arc related PowerShell modules.
 Store a specified set of tags in a hash table.
 
 Create a resource group for Azure Arc-enabled servers, if it not already exists. Add specified tags and a resource lock.
@@ -21,7 +22,7 @@ Register required Azure resource providers for Azure Arc-enabled servers, if not
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled Kubernetes, if not already registered. Registration may take up to 10 minutes.
 
-Save Log Analytics workspace from the managment subscription in a variable.
+Save the Log Analytics workspace from the management subscription in a variable.
 Add the SQLAssessment solution, if it is not already added (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers). 
 It can take up to 4 hours before any data will be available.
 
@@ -33,7 +34,7 @@ Last modified:  03/06/2022
 Author:         Wim Matthyssen
 Version:        1.0
 PowerShell:     Azure Cloud Shell or Azure PowerShell
-Requires:       PowerShell Az (v5.9.0) and Az.Network (v4.7.0) Module
+Requires:       PowerShell Az (v7.4.0) and Az.Network (v4.7.0) Module
 Action:         Change variables were needed to fit your needs. 
 Disclaimer:     This script is provided "As Is" with no warranties.
 
@@ -55,6 +56,8 @@ Connect-AzAccount
 $spoke = "prd"
 $purpose = "arc"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
+
+$powerShellModuleServers = "Az.ConnectedMachine"
 
 $rgArcServers = #<your resource group name for Azure Arc-enabled servers> The Azure resource group used for for Azure Arc-enabled servers. Example: "rg-prd-myh-arc-srv-01"
 $rgArcSqlServers = #<your resource group name for SQL Server on Azure Arc-enabled servers> The Azure resource group used for SQL Server Azure Arc-enabled servers. Example: "rg-prd-myh-arc-sql-01" 
@@ -114,6 +117,16 @@ if ($PSVersionTable.Platform -eq "Unix") {
 ## Suppress breaking change warning messages
 
 Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Install Azure Arc related PowerShell modules
+
+#Install Az.ConnectedMachine module, which isrequired to manage VM extensions on your hybrid servers managed by Azure Arc-enabled servers
+Install-Module -Name $powerShellModuleServers -Force
+
+Write-Host ($writeEmptyLine + "# All Azure Arc related PowerShell modules are installed" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
