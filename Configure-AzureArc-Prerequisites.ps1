@@ -1,4 +1,5 @@
 <#
+
 .SYNOPSIS
 
 A script used to configure prerequisites for Azure Arc.
