@@ -34,7 +34,7 @@ Last modified:  03/06/2022
 Author:         Wim Matthyssen
 Version:        1.0
 PowerShell:     Azure Cloud Shell or Azure PowerShell
-Requires:       PowerShell Az (v7.4.0) and Az.Network (v4.7.0) Module
+Requires:       PowerShell Az (v7.4.0) Module
 Action:         Change variables were needed to fit your needs. 
 Disclaimer:     This script is provided "As Is" with no warranties.
 
