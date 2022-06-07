@@ -271,7 +271,7 @@ Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-e
 ## It can take up to 4 hours before any data will be available.
 
 # Select management subscription. Adjust to your needs if you are using another subscription for your Log Analytics workspace, otherwise delete this part!
-$companyShortName = "myh"
+$companyShortName = #<your company short name here> The company short name you want to use. Example:"myh"
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.SubscriptionId | Out-Null
