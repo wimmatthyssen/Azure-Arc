@@ -270,11 +270,13 @@ Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-e
 ## Add the SQLAssessment solution, if it is not already added (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers).
 ## It can take up to 4 hours before any data will be available.
 
-# Save Log Analytics workspace from the managment subscription in a variable
+# Select managment subscription. Adjust to your needs if you are using another subscription for your Log Analytics workspace, otherwise delete this part!
+$companyShortName = "myh"
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.SubscriptionId | Out-Null
 
+# Save Log Analytics workspace in a variable
 $workSpace = Get-AzOperationalInsightsWorkspace | Where-Object Name -Match $logAnalyticsWorkSpaceName
 
 try {
