@@ -57,7 +57,7 @@ $spoke = "prd"
 $purpose = "arc"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
-$powerShellModuleServers = "Az.ConnectedMachine"
+$powerShellModuleArcServers = "Az.ConnectedMachine"
 
 $rgArcServers = #<your resource group name for Azure Arc-enabled servers> The Azure resource group used for for Azure Arc-enabled servers. Example: "rg-prd-myh-arc-srv-01"
 $rgArcSqlServers = #<your resource group name for SQL Server on Azure Arc-enabled servers> The Azure resource group used for SQL Server Azure Arc-enabled servers. Example: "rg-prd-myh-arc-sql-01" 
@@ -123,7 +123,7 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 ## Install Azure Arc related PowerShell modules
 
 #Install Az.ConnectedMachine module, which isrequired to manage VM extensions on your hybrid servers managed by Azure Arc-enabled servers
-Install-Module -Name $powerShellModuleServers -Force
+Install-Module -Name $powerShellModuleArcServers -Force
 
 Write-Host ($writeEmptyLine + "# All Azure Arc related PowerShell modules are installed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
