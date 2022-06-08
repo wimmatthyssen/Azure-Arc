@@ -8,5 +8,5 @@ Currently this repository holds the following scritps:
 
 - **Configure-AzureArc-Prerequisites.ps1**
 
-More information about the Microsoft Azure Backup Server (MABS) v3: Antivirus Exclusions script can be found on my blog: https://wmatthyssen.com/2021/02/04/microsoft-azure-backup-server-mabs-antivirus-exclusions/
+  More information about the Azure Arc prerequisites script can be found on my blog: https://wmatthyssen.com/2021/02/04/microsoft-azure-backup-server-mabs-antivirus-exclusions/
 
