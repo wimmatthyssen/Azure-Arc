@@ -17,6 +17,10 @@ Create a resource group for Azure Arc-enabled servers, if it not already exists.
 Create a resource group for SQL Server on Azure Arc-enabled servers, if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc-enabled Kubernetes, if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc-based VM operations on your Azure Stack HCI, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Azure Arc-enabled VMware vSphere, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Azure Arc-enabled SCVMM, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Azure Arc-enabled PostgreSQL Hyperscale server, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Azure Arc-enabled SQL managed instance , if it not already exists. Add specified tags and a resource lock.
 
 Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
@@ -24,6 +28,7 @@ Register required Azure resource providers for Azure Arc-enabled Kubernetes, if 
 
 Save the Log Analytics workspace from the management subscription in a variable.
 Add the SQLAssessment solution, if it is not already added (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers). 
+Add the ContainerInsights solution, if it is not already added.
 It can take up to 4 hours before any data will be available.
 
 .NOTES
@@ -57,15 +62,18 @@ $spoke = "prd"
 $purpose = "arc"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
-$powerShellModuleArcServers = "Az.ConnectedMachine"
-
 $rgArcServers = #<your resource group name for Azure Arc-enabled servers> The Azure resource group used for for Azure Arc-enabled servers. Example: "rg-prd-myh-arc-srv-01"
 $rgArcSqlServers = #<your resource group name for SQL Server on Azure Arc-enabled servers> The Azure resource group used for SQL Server Azure Arc-enabled servers. Example: "rg-prd-myh-arc-sql-01" 
 $rgArcKubernetes = #<your resource group name for Azure Arc-enabled Kubernetes> The Azure resource group used for Azure Arc-enabled Kubernetes. Example: "rg-prd-myh-arc-k8s-01"
 $rgArcHci = #<your resource group name for Azure Arc-based VM operations on your Azure Stack HCI> The Azure resource group used for Azure Arc-based VM operations on your Azure Stack HCI. Example: "rg-prd-myh-arc-hci-01"
+$rgArcVSphere = #<your resource group name for Azure Arc-enabled VMware vSphere> The Azure resource group used for for Azure Arc-enabled VMware vSphere. Example: "rg-prd-myh-arc-vsphere-01"
+$rgArcScvmm = #<your resource group name for Azure Arc-enabled SCVMM> The Azure resource group used for for Azure Arc-enabled VMware SCVMM. Example: "rg-prd-myh-arc-scvmm-01"
+$rgArcPostgreSql = #<your resource group name for Azure Arc-enabled PostgreSQL Hyperscale server> The Azure resource group used for for Azure Arc-enabled PostgreSQL Hyperscale server. Example: "rg-prd-myh-arc-psql-01"
+$rgArcSqlManagedInstance = #<your resource group name for Azure Arc-enabled SQL managed instance> The Azure resource group used for for Azure Arc-enabled SQL managed instance. Example: "rg-prd-myh-arc-sqlmi-01"
 
 $logAnalyticsWorkSpaceName = #<your Log Analytics Worspace name here> The name of your existing Log Analytics workspace. Example: "law-hub-myh-01"
-$logAnalyticsSolution = "SQLAssessment"
+$logAnalyticsSolutionSQLAssessment = "SQLAssessment"
+$logAnalyticsSolutionContainers = "ContainerInsights"
 
 $tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
@@ -122,10 +130,22 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## Install Azure Arc related PowerShell modules
 
-#Install Az.ConnectedMachine module, which isrequired to manage VM extensions on your hybrid servers managed by Azure Arc-enabled servers
+#Install Az.ConnectedMachine module, which is required to manage VM extensions on your hybrid servers managed by Azure Arc-enabled servers
 Install-Module -Name $powerShellModuleArcServers -Force
 
+#Install AzureConnectedMachineDsc module, which is required to install the Connected Machine agent using Windows PowerShell DSC
+Install-Module -Name $powerShellModuleArcServersDsc -Force
+
 Write-Host ($writeEmptyLine + "# All Azure Arc related PowerShell modules are installed" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine 
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Store the specified set of tags in a hash table
+
+$tags = @{$tagSpokeName=$tagSpokeValue;$tagCostCenterName=$tagCostCenterValue;$tagCriticalityName=$tagCriticalityValue;$tagPurposeName=$tagPurposeValue}
+
+Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,6 +251,98 @@ Write-Host ($writeEmptyLine + "# Resource group $rgArcHci available" + $writeSep
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## Create a resource group for Azure Arc-enabled VMware vSphere (preview), if it not already exists. Add specified tags and a resource lock
+
+try {
+    Get-AzResourceGroup -Name $rgArcVSphere -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgArcVSphere.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Azure Arc-enabled servers resource group
+Set-AzResourceGroup -Name $rgArcVSphere -Tag $tags | Out-Null
+
+# Lock the Azure Arc-enabled servers resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgArcVSphere 
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgArcVSphere -LockNotes "Prevent $rgArcVSphere from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgArcVSphere available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a resource group for Azure Arc-enabled SCVMM (preview), if it not already exists. Add specified tags and a resource lock
+
+try {
+    Get-AzResourceGroup -Name $rgArcScvmm -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgArcScvmm.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Azure Arc-enabled servers resource group
+Set-AzResourceGroup -Name $rgArcScvmm -Tag $tags | Out-Null
+
+# Lock the Azure Arc-enabled servers resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgArcScvmm
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgArcScvmm -LockNotes "Prevent $rgArcScvmm from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgArcScvmm available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a resource group Azure Arc-enabled PostgreSQL Hyperscale (preview), if it not already exists. Add specified tags and a resource lock
+
+try {
+    Get-AzResourceGroup -Name $rgArcPostgreSql -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgArcPostgreSql.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Azure Arc-enabled servers resource group
+Set-AzResourceGroup -Name $rgArcPostgreSql -Tag $tags | Out-Null
+
+# Lock the Azure Arc-enabled servers resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgArcPostgreSql
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgArcPostgreSql -LockNotes "Prevent $rgArcPostgreSql from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgArcPostgreSql available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a resource group Azure Arc-enabled SQL managed instance, if it not already exists. Add specified tags and a resource lock
+
+try {
+    Get-AzResourceGroup -Name $rgArcSqlManagedInstance -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgArcSqlManagedInstance.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Azure Arc-enabled servers resource group
+Set-AzResourceGroup -Name $rgArcSqlManagedInstance -Tag $tags | Out-Null
+
+# Lock the Azure Arc-enabled servers resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgArcPostgreSql
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgArcSqlManagedInstance -LockNotes "Prevent $rgArcSqlManagedInstance from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgArcSqlManagedInstance available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes
 
 # Register Microsoft.HybridCompute resource provider
@@ -280,8 +392,7 @@ Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-e
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Add the SQLAssessment solution, if it is not already added (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers).
-## It can take up to 4 hours before any data will be available.
+## Add all Arc related solutions, if they are not already added. It can take up to 4 hours before any data will be available
 
 # Select management subscription. Adjust to your needs if you are using another subscription for your Log Analytics workspace, otherwise delete this part!
 $companyShortName = #<your company short name here> The company short name you want to use. Example:"myh"
@@ -292,13 +403,25 @@ Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.Subs
 # Save Log Analytics workspace in a variable
 $workSpace = Get-AzOperationalInsightsWorkspace | Where-Object Name -Match $logAnalyticsWorkSpaceName
 
+# Add SQL Assessment solution (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers)
 try {
-    Get-AzMonitorLogAnalyticsSolution -Name $logAnalyticsSolution -ResourceGroupName $workSpace.ResourceGroupName -SubscriptionId $subNameManagement.SubscriptionId -ErrorAction Stop | Out-Null
+    Get-AzMonitorLogAnalyticsSolution -Name $logAnalyticsSolutionSQLAssessment -ResourceGroupName $workSpace.ResourceGroupName `
+    -SubscriptionId $subNameManagement.SubscriptionId -ErrorAction Stop | Out-Null
 } catch {
-    New-AzMonitorLogAnalyticsSolution -Type $logAnalyticsSolution -ResourceGroupName $workSpace.ResourceGroupName -Location $workspace.Location -WorkspaceResourceId $workspace.ResourceId | Out-Null
+    New-AzMonitorLogAnalyticsSolution -Type $logAnalyticsSolutionSQLAssessment -ResourceGroupName $workSpace.ResourceGroupName `
+    -Location $workspace.Location -WorkspaceResourceId $workspace.ResourceId | Out-Null
 }
 
-Write-Host ($writeEmptyLine + "# $logAnalyticsSolution added" + $writeSeperatorSpaces + $currentTime)`
+# Add Container Monitoring solution
+try {
+    Get-AzMonitorLogAnalyticsSolution -Name $logAnalyticsSolutionContainers -ResourceGroupName $workSpace.ResourceGroupName `
+    -SubscriptionId $subNameManagement.SubscriptionId -ErrorAction Stop | Out-Null
+} catch {
+    New-AzMonitorLogAnalyticsSolution -Type $logAnalyticsSolutionContainers -ResourceGroupName $workSpace.ResourceGroupName `
+    -Location $workspace.Location -WorkspaceResourceId $workspace.ResourceId | Out-Null
+}
+
+Write-Host ($writeEmptyLine + "# All Arc related solutions added" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
