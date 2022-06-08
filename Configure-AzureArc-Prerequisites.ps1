@@ -20,7 +20,7 @@ Create a resource group for Azure Arc-based VM operations on your Azure Stack HC
 Create a resource group for Azure Arc-enabled VMware vSphere, if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc-enabled SCVMM, if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc-enabled PostgreSQL Hyperscale server, if it not already exists. Add specified tags and a resource lock.
-Create a resource group for Azure Arc-enabled SQL managed instance , if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Azure Arc-enabled SQL managed instance, if it not already exists. Add specified tags and a resource lock.
 
 Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
