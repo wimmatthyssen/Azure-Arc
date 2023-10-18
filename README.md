@@ -10,3 +10,6 @@ Currently this repository holds the following scritps:
 
   More information about the Azure Arc prerequisites script can be found on my blog: https://wmatthyssen.com/2022/06/03/azure-arc-azure-powershell-prerequisites-configuration-script/
 
+- **Remove-ESU-license-using-Azure-Arc-WS2012-ESU-ARM-APIs.ps1**
+
+  More information about the Azure Arc prerequisites script can be found on my blog: 
