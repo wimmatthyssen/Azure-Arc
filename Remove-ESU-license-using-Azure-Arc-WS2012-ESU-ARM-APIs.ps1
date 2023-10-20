@@ -34,7 +34,7 @@ Set-AzContext -Subscription "<SubscriptionName>" (if not using the default subsc
 
 .LINK
 
-
+https://wmatthyssen.com/2023/10/20/azure-arc-remove-an-extended-security-license-with-an-azure-powershell-script/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
