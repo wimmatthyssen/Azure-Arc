@@ -13,3 +13,7 @@ Currently this repository holds the following scritps:
 - **Remove-ESU-license-using-Azure-Arc-WS2012-ESU-ARM-APIs.ps1**
 
   More information about this Azure PowerShell script to remove an Extended Security License (ESU) by using the Azure Arc WS2012 ESU ARM APIs can be found on my blog: https://wmatthyssen.com/2023/10/20/azure-arc-remove-an-extended-security-license-with-an-azure-powershell-script/
+
+- **Provision-ESU-license-using-Azure-Arc-WS2012-ESU-ARM-APIs.ps1**
+
+  More information about this Azure PowerShell script to provision an Extended Security License (ESU) by using the Azure Arc WS2012 ESU ARM APIs can be found on my blog: https://wmatthyssen.com/2023/10/26/azure-arc-provision-an-extended-security-license-with-an-azure-powershell-script/
