@@ -17,3 +17,7 @@ Currently this repository holds the following scritps:
 - **Provision-ESU-license-using-Azure-Arc-WS2012-ESU-ARM-APIs.ps1**
 
   More information about this Azure PowerShell script to provision an Extended Security License (ESU) by using the Azure Arc WS2012 ESU ARM APIs can be found on my blog: https://wmatthyssen.com/2023/10/26/azure-arc-provision-an-extended-security-license-with-an-azure-powershell-script/
+
+- **Install-Azure-Arc-software-requirements-on-W2K8-R2-SP1.ps1**
+
+  More information about this PowerShell script to install Windows Management Framework 5.1 on a Windows Server 2008 R2 SP1 as required software to be able to onboard this server into Azure Arc can be found on my blog: https://wmatthyssen.com/2023/11/16/azure-arc-onboard-a-windows-server-2008-r2-sp1/
