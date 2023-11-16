@@ -80,7 +80,7 @@ $warningPreference = "SilentlyContinue"
 
 ## Write script started
 
-Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 3 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 4 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
