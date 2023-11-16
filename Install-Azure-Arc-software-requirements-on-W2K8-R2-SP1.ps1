@@ -34,7 +34,7 @@ Disclaimer:     This script is provided "as is" with no warranties.
 
 .LINK
 
-
+https://wmatthyssen.com/2023/11/16/azure-arc-onboard-a-windows-server-2008-r2-sp1/
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
