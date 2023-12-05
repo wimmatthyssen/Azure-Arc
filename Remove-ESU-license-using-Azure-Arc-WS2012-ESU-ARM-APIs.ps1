@@ -16,9 +16,9 @@ Delete the ESU license.
 
 Filename:       Remove-ESU-license-using-Azure-Arc-WS2012-ESU-ARM-APIs.ps1
 Created:        18/10/2023
-Last modified:  18/10/2023
+Last modified:  05/12/2023
 Author:         Wim Matthyssen
-Version:        1.0
+Version:        1.5
 PowerShell:     Azure PowerShell and Azure Cloud Shell
 Requires:       PowerShell Az (v10.4.1)
 Action:         Change variables were needed to fit your needs. 
@@ -37,7 +37,7 @@ Set-AzContext -Subscription "<SubscriptionName>" (if not using the default subsc
 https://wmatthyssen.com/2023/10/20/azure-arc-remove-an-extended-security-license-with-an-azure-powershell-script/
 #>
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Parameters
 
@@ -48,21 +48,22 @@ param(
     [parameter(Mandatory =$true)][ValidateNotNullOrEmpty()] [string] $esuLicenseName
 )
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Variables
 
 $region = #<your region here> The used Azure public region. Example: "westeurope"
-
 $rgNameArcManagement = #<your Azure Arc management resource group name here> The name of the Azure resource group in which your Azure Arc managment resources are deployed. Example: "rg-prd-myh-arc-management-01"
+$apiVersion = "?api-version=" + "2023-10-03-preview" #older versions 2022-07-01; 2023-06-20-preview
 
+# Time, colors, and formatting
 Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null 
 $foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Remove the breaking change warning messages
 
@@ -70,15 +71,14 @@ Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true |
 Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
 $warningPreference = "SilentlyContinue"
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Write script started
 
 Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 1 minute to complete" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Change the current context to the specified subscription
 
 $subName = Get-AzSubscription | Where-Object {$_.Name -like $subscriptionName}
@@ -88,12 +88,12 @@ Set-AzContext -SubscriptionId $subName.SubscriptionId | Out-Null
 Write-Host ($writeEmptyLine + "# Specified subscription in current tenant selected" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Delete the ESU license
 
 # Construct the URI for the Azure resource to be deleted
-$URI = "https://management.azure.com/subscriptions/" + $subName.SubscriptionId + "/resourceGroups/" + $rgNameArcManagement + "/providers/Microsoft.HybridCompute/licenses/" + $esuLicenseName + "?api-version=2023-06-20-preview"
+$URI = "https://management.azure.com/subscriptions/" + $subName.SubscriptionId + "/resourceGroups/" + $rgNameArcManagement + "/providers/Microsoft.HybridCompute/licenses/" + $esuLicenseName + $apiVersion
 
 # Get the Azure access token and store it in a variable
 $accessToken = (Get-AzAccessToken -ResourceUrl https://management.azure.com).Token
@@ -111,16 +111,16 @@ $body = '{"location": $region}'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
 
 # Send the HTTP request to the specified URI with the provided method, headers, and body
-$response = Invoke-WebRequest -URI $URI -Method $method -Headers $headers -Body $body
+Invoke-WebRequest -URI $URI -Method $method -Headers $headers -Body $body | Out-Null
 
 Write-Host ($writeEmptyLine + "# ESU license $esuLicenseName deleted" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Write script completed
 
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
