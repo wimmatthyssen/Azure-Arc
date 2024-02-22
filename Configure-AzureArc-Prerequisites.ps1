@@ -5,7 +5,7 @@ A script used to configure prerequisites for Azure Arc.
 
 .DESCRIPTION
 
-A script used to configure prerequisites for Azure Arc.
+A script used to configure prerequisites for Azure Arc. (Test)
 This script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (which is a requirement), otherwise the Azure PowerShell script will be exited.
