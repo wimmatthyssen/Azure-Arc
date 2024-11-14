@@ -23,6 +23,8 @@ Create a resource group for Azure Arc-enabled SQL managed instance, if it not al
 Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled Kubernetes, if not already registered. Registration may take up to 10 minutes.
+Register required Azure resource providers for Azure Arc-enabled SCVMM, if not already registered. Registration may take up to 10 minutes.
+Register required Azure resource providers for Azure Arc-enabled vSphere, if not already registered. Registration may take up to 10 minutes.
 Save the Log Analytics workspace from the management subscription in a variable.
 Add the SQLAssessment solution, if it is not already added (required for the Environment Health feature in SQL Server on Azure Arc-enabled servers). 
 Add the ContainerInsights solution, if it is not already added.
