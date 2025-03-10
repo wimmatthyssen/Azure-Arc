@@ -373,6 +373,9 @@ try {
     # Register Microsoft.GuestConfiguration resource provider
     Register-AzResourceProvider -ProviderNamespace Microsoft.GuestConfiguration  | Out-Null
 
+    # Register Microsoft.Compute resource provider
+    Register-AzResourceProvider -ProviderNamespace Microsoft.Compute  | Out-Null
+
     Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-enabled servers are currently registering or already registered" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
