@@ -43,6 +43,8 @@ Get-AzTenant (if not using the default tenant)
 Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the default tenant)
 .\Configure-Azure-Arc-Prerequisites.ps1 -SubscriptionName <"your Azure subscription name here">
 
+Example: .\Configure-Azure-Arc-Prerequisites.ps1 -SubscriptionName "sub-prd-myh-arc-infra-03"
+
 .LINK
 
 https://wmatthyssen.com/2022/06/03/azure-arc-azure-powershell-prerequisites-configuration-script/
