@@ -112,6 +112,7 @@ $tagPurposeValue = "$($purpose[0].ToString().ToUpper())$($purpose.SubString(1))"
 
 # Other variables
 Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null $foregroundColor1 = "Red"
+$foregroundColor1 = "Red"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
