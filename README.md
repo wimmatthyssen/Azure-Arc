@@ -6,7 +6,7 @@ You can find more information about these scripts on my blog: https://wmatthysse
 
 Currently this repository holds the following scritps:
 
-- **Configure-AzureArc-Prerequisites.ps1**
+- **Configure-Azure-Arc-Prerequisites.ps1**
 
   More information about the Azure Arc prerequisites script can be found on my blog: https://wmatthyssen.com/2022/06/03/azure-arc-azure-powershell-prerequisites-configuration-script/
 
