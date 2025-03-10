@@ -65,7 +65,7 @@ param(
 
 # Naming convention: example - rg-prd-myh-arc-srv-01 (resource type - spoke - company - purpose - arctype - inventory number)
 
-# Dynamic variables - Please change the values to if required.
+# Dynamic variables - Please change the values if required.
 $spoke = "prd" # Abbreviation for the spoke (e.g., 'prd' for production, 'dev' for development). Change based on your environment.
 $companyShortName = "myh" # Abbreviation for your company or organization (e.g., 'myh' for myhcjourney). Replace with your company's short name.
 $purpose = "arc" # Specifies the intended use of the resource group or service (e.g., 'arc' for Azure Arc). Update if different.
@@ -111,7 +111,7 @@ $tagPurposeName  = "Purpose" # The purpose tag name you want to use.
 $tagPurposeValue = "$($purpose[0].ToString().ToUpper())$($purpose.SubString(1))"
 
 # Other variables
-Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} 
+Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null
 $foregroundColor1 = "Red"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
