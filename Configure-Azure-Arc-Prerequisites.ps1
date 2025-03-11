@@ -93,7 +93,7 @@ $esuAbbreviation = "esu" # Abbreviation for Extended Security Updates. Change as
 $logAnalyticsAbbreviation = "law" # Abbreviation for Log Analytics workspace. Change as per your naming convention.
 
 # Other Configuration Variables
-$inventoryNumbering = 1 # Inventory number for the resource (e.g., 1, 2, 3, etc. to differentiate resources).
+$inventoryNumbering = 3 # Inventory number for the resource (e.g., 1, 2, 3, etc. to differentiate resources).
 $region = "westeurope" # Azure region (e.g., 'westeurope', 'eastus'). Replace with your current region if needed.
 
 # Security contacts
