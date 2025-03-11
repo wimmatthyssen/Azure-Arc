@@ -133,8 +133,9 @@ $tagPurposeValue = "$($purpose[0].ToString().ToUpper())$($purpose.SubString(1))"
 
 # Other variables
 Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null
-$foregroundColor1 = "Red"
+$foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
+$foregroundColor3 = "Red"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
 
@@ -468,7 +469,7 @@ try {
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
     Write-Host ($writeEmptyLine + "# Error registering resource providers for Azure Arc-enabled servers: $_" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
+    -foregroundcolor $foregroundColor3 $writeEmptyLine
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -488,8 +489,8 @@ try {
     Write-Host ($writeEmptyLine + "# All required resource providers for Azure Arc-enabled Kubernetes are currently registering or already registered" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
-    Write-Host ($writeEmptyLine + "# Error registering resource providers for Azure Arc-enabled Kubernetes: $_" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
+    Write-Host ($writeEmptyLine + "# Error registering resource providers for Azure Arc-enabled Kubernetes: $_" + $writeSeperatorSpaces + $currentTime )`
+    -foregroundcolor $foregroundColor3 $writeEmptyLine
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -504,12 +505,12 @@ try {
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
     Write-Host ($writeEmptyLine + "# Error registering resource providers for Azure Arc-enabled data services: $_" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
+    -foregroundcolor $foregroundColor3 $writeEmptyLine
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Register required Azure resource providers for Micrsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
+## Register required Azure resource providers for Microsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
 
 try {
     # Register Microsoft.Security resource provider
@@ -522,7 +523,7 @@ try {
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
     Write-Host ($writeEmptyLine + "# Error registering resource providers for Microsoft Defender for Cloud: $_" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
+    -foregroundcolor $foregroundColor3 $writeEmptyLine
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -554,7 +555,7 @@ Write-Host ($writeEmptyLine + "# Specified Defender Plans enabled" + $writeSeper
 
 ## Configure the Log Analytics workspace to which the agents will report
 
-Set-AzSecurityWorkspaceSetting -Name "default" -Scope "/subscriptions/ $($subName.Id)" -WorkspaceId $workSpace.ResourceId | Out-Null
+Set-AzSecurityWorkspaceSetting -Name "default" -Scope "/subscriptions/$($subName.Id)" -WorkspaceId $workSpace.ResourceId | Out-Null
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -563,7 +564,7 @@ Set-AzSecurityWorkspaceSetting -Name "default" -Scope "/subscriptions/ $($subNam
 # Convert the array to a comma-separated string
 $securityEmailsString = $securityEmails -join ';'
 
-Set-AzSecurityContact -Name "default" -Email $securityEmailsString -AlertAdmin -NotifyOnAlert - | Out-Null
+Set-AzSecurityContact -Name "default" -Email $securityEmailsString -AlertAdmin -NotifyOnAlert | Out-Null
 
 Write-Host ($writeEmptyLine + "# Security contact details defined" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
