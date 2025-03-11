@@ -27,7 +27,7 @@ Create a resource group for Extended Security Updates, if it not already exists.
 Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled Kubernetes, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
-Register required Azure resource providers for Micrsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
+Register required Azure resource providers for Microsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
 Enable Defender Plans.
 Configure the Log Analytics workspace to which the agents will report.
 Configure security contacts.
