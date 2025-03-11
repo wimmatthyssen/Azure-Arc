@@ -8,7 +8,9 @@ A script used to configure prerequisites for Azure Arc.
 A script used to configure prerequisites for Azure Arc.
 This script will do all of the following:
 
-Remove the breaking change warning messages.
+Suppress Azure PowerShell breaking change warning messages to avoid unnecessary output.
+Change the current context to use the management subscription holding the central Log Analytics workspace
+Retrieve the Log Analytics workspace from the management subscription.
 Change the current context to the specified subscription.
 Store a specified set of tags in a hash table.
 Create a resource group for Azure Arc-enabled servers, if it not already exists. Add specified tags and a resource lock.
@@ -20,9 +22,15 @@ Create a resource group for SQL Server on Azure Arc-enabled servers, if it not a
 Create a resource group for SQL Managed Instance enabled by Azure Arc, if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc-enabled PostgreSQL (preview), if it not already exists. Add specified tags and a resource lock.
 Create a resource group for Azure Arc data controller, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Management purposes, if it not already exists. Add specified tags and a resource lock.
+Create a resource group for Extended Security Updates, if it not already exists. Add specified tags and a resource lock.
 Register required Azure resource providers for Azure Arc-enabled servers, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled Kubernetes, if not already registered. Registration may take up to 10 minutes.
 Register required Azure resource providers for Azure Arc-enabled data services, if not already registered. Registration may take up to 10 minutes.
+Register required Azure resource providers for Micrsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
+Enable Defender Plans.
+Configure the Log Analytics workspace to which the agents will report.
+Configure security contacts.
 
 .NOTES
 
@@ -65,7 +73,7 @@ param(
 
 # Naming convention: example - rg-prd-myh-arc-srv-01 (resource type - spoke - company - purpose - arctype - inventory number)
 
-# Dynamic variables - Please change the values if required.
+# Dynamic variables - Please change the values to if required.
 $spoke = "prd" # Abbreviation for the spoke (e.g., 'prd' for production, 'dev' for development). Change based on your environment.
 $companyShortName = "myh" # Abbreviation for your company or organization (e.g., 'myh' for myhcjourney). Replace with your company's short name.
 $purpose = "arc" # Specifies the intended use of the resource group or service (e.g., 'arc' for Azure Arc). Update if different.
@@ -80,10 +88,16 @@ $sqlAbbreviation = "sql" # Abbreviation for SQL Server. Change as per your namin
 $sqlManagedInstanceAbbreviation = "sqlmi" # Abbreviation for SQL Managed Instance. Change as per your naming convention.
 $postgrSqlabbreviation = "psql" # Abbreviation for PostgreSQL Hyperscale. Change as per your naming convention.
 $dataControllersAbbreviation = "adc" # Abbreviation for Data Controllers. Change as per your naming convention.
+$managementAbbreviation = "management" # Abbreviation for Management. Change as per your naming convention.
+$esuAbbreviation = "esu" # Abbreviation for Extended Security Updates. Change as per your naming convention.
+$logAnalyticsAbbreviation = "law" # Abbreviation for Log Analytics workspace. Change as per your naming convention.
 
 # Other Configuration Variables
 $inventoryNumbering = 1 # Inventory number for the resource (e.g., 1, 2, 3, etc. to differentiate resources).
 $region = "westeurope" # Azure region (e.g., 'westeurope', 'eastus'). Replace with your current region if needed.
+
+# Security contacts
+$securityEmails = @("azure.admin@example.com", "azure.support@example.com") # Email addresses of the security contacts who will receive email notifications from Defender for Cloud.
 
 # Resource groups Arc resources
 $rgNameArcServers = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $serverAbbreviation + "-" + $inventoryNumbering.ToString("D2")
@@ -98,7 +112,14 @@ $rgNameArcScvmm = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose
 $rgNameArcSqlServers = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $sqlAbbreviation + "-" + $inventoryNumbering.ToString("D2")
 $rgNameArcSqlManagedInstance = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $sqlManagedInstanceAbbreviation + "-" + $inventoryNumbering.ToString("D2")
 $rgNameArcPostgreSql = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $postgrSqlabbreviation + "-" + $inventoryNumbering.ToString("D2") 
-$rgnameArcDataControllers = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $dataControllersAbbreviation + "-" + $inventoryNumbering.ToString("D2")
+$rgNameArcDataControllers = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $dataControllersAbbreviation + "-" + $inventoryNumbering.ToString("D2")
+
+# Resource groups other resources
+$rgNameManagement = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $managementAbbreviation + "-" + $inventoryNumbering.ToString("D2")
+$rgNameEsu = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $esuAbbreviation + "-" + $inventoryNumbering.ToString("D2")
+
+# Log Analytics workspace
+$logAnalyticsWorkSpaceName = $logAnalyticsAbbreviation + "-" + "hub" + "-" + $companyShortName + "-" + $inventoryNumbering.ToString("D2")
 
 # Tags
 $tagSpokeName = "Env" # The environment tag name you want to use.
@@ -119,7 +140,7 @@ $writeSeperatorSpaces = " - "
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Remove the breaking change warning messages
+## Suppress Azure PowerShell breaking change warning messages to avoid unnecessary output.
 
 Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true | Out-Null
 Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
@@ -131,6 +152,27 @@ $warningPreference = "SilentlyContinue"
 
 Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Change the current context to use the management subscription holding the central Log Analytics workspace
+
+# The subscription is identified based on its name containing "*management*". Change the name if needed.
+$subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
+
+Set-AzContext -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
+
+Write-Host ($writeEmptyLine + "# The subscription holding the central Log Analytics workspace is selected" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Retrieve the Log Analytics workspace from the management subscription
+
+$workSpace = Get-AzOperationalInsightsWorkspace | Where-Object Name -Match $logAnalyticsWorkSpaceName
+
+Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -304,7 +346,7 @@ try {
 Set-AzResourceGroup -Name $rgNameArcSqlManagedInstance -Tag $tags | Out-Null
 
 # Lock the SQL Managed Instance enabled by Azure Arc resource group with a CanNotDelete lock
-$lock = Get-AzResourceLock -ResourceGroupName $rgNameArcPostgreSql
+$lock = Get-AzResourceLock -ResourceGroupName $rgNameArcSqlManagedInstance
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcSqlManagedInstance -LockNotes "Prevent $rgNameArcSqlManagedInstance from deletion" -Force | Out-Null
@@ -341,22 +383,68 @@ Write-Host ($writeEmptyLine + "# Resource group $rgNameArcPostgreSql available" 
 ## Create a resource group for Azure Arc data controller, if it not already exists. Add specified tags and a resource lock.
 
 try {
-    Get-AzResourceGroup -Name $rgnameArcDataControllers -ErrorAction Stop | Out-Null
+    Get-AzResourceGroup -Name $rgNameArcDataControllers -ErrorAction Stop | Out-Null
 } catch {
-    New-AzResourceGroup -Name $rgnameArcDataControllers.ToLower() -Location $region -Force | Out-Null
+    New-AzResourceGroup -Name $rgNameArcDataControllers.ToLower() -Location $region -Force | Out-Null
 }
 
 # Set tags Azure Arc-enabled Data controllers resource group
-Set-AzResourceGroup -Name $rgnameArcDataControllers -Tag $tags | Out-Null
+Set-AzResourceGroup -Name $rgNameArcDataControllers -Tag $tags | Out-Null
 
 # Lock the Azure Arc-enabled Data controllers resource group with a CanNotDelete lock
-$lock = Get-AzResourceLock -ResourceGroupName $rgnameArcDataControllers
+$lock = Get-AzResourceLock -ResourceGroupName $rgNameArcDataControllers
 
 if ($null -eq $lock){
-    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgnameArcDataControllers -LockNotes "Prevent $rgnameArcDataControllers from deletion" -Force | Out-Null
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcDataControllers -LockNotes "Prevent $rgNameArcDataControllers from deletion" -Force | Out-Null
     } 
 
-Write-Host ($writeEmptyLine + "# Resource group $rgnameArcDataControllers available" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Resource group $rgNameArcDataControllers available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a resource group for Management purposes, if it not already exists. Add specified tags and a resource lock.
+
+try {
+    Get-AzResourceGroup -Name $rgNameManagement -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgNameManagement.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Management resource group
+Set-AzResourceGroup -Name $rgNameManagement -Tag $tags | Out-Null
+
+# Lock the Management resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgNameManagement
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameManagement -LockNotes "Prevent $rgNameManagement from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgNameManagement available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a resource group for Extended Security Updates, if it not already exists. Add specified tags and a resource lock.
+
+try {
+    Get-AzResourceGroup -Name $rgNameEsu -ErrorAction Stop | Out-Null
+} catch {
+    New-AzResourceGroup -Name $rgNameEsu.ToLower() -Location $region -Force | Out-Null
+}
+
+# Set tags Azure Extended Security Updates resource group
+Set-AzResourceGroup -Name $rgNameEsu -Tag $tags | Out-Null
+
+# Lock the Extended Security Updates resource group with a CanNotDelete lock
+$lock = Get-AzResourceLock -ResourceGroupName $rgNameEsu
+
+if ($null -eq $lock){
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameEsu -LockNotes "Prevent $rgNameEsu from deletion" -Force | Out-Null
+    } 
+
+Write-Host ($writeEmptyLine + "# Resource group $rgNameEsu available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -418,6 +506,67 @@ try {
     Write-Host ($writeEmptyLine + "# Error registering resource providers for Azure Arc-enabled data services: $_" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine
 }
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Register required Azure resource providers for Micrsoft Defender for Cloud, if not already registered. Registration may take up to 10 minutes.
+
+try {
+    # Register Microsoft.Security resource provider
+    Register-AzResourceProvider -ProviderNamespace Microsoft.Security | Out-Null
+
+    # Register Microsoft.PolicyInsights resource provider
+    Register-AzResourceProvider -ProviderNamespace Microsoft.PolicyInsights | Out-Null
+
+    Write-Host ($writeEmptyLine + "# All required resource providers for Microsoft Defender for Cloud are currently registering or already registered" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor2 $writeEmptyLine
+} catch {
+    Write-Host ($writeEmptyLine + "# Error registering resource providers for Microsoft Defender for Cloud: $_" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor1 $writeEmptyLine
+}
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Enable Defender Plans
+
+# Defender for Servers Plan 2
+Set-AzSecurityPricing -Name "VirtualMachines" -PricingTier "Standard" | Out-Null
+
+# Defender for Containers
+Set-AzSecurityPricing -Name "Containers" -PricingTier "Standard" | Out-Null
+
+# Defender for Key Vault
+Set-AzSecurityPricing -Name "KeyVaults" -PricingTier "Standard" | Out-Null
+
+# Defender for SQL servers on machines
+Set-AzSecurityPricing -Name "SqlServerVirtualMachines" -PricingTier "Standard" | Out-Null
+
+# Defender for Storage
+Set-AzSecurityPricing -Name "StorageAccounts" -PricingTier "Standard" | Out-Null
+
+# Defender for Resource Manager
+Set-AzSecurityPricing -Name "ARM" -PricingTier "Standard" | Out-Null
+
+Write-Host ($writeEmptyLine + "# Specified Defender Plans enabled" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Configure the Log Analytics workspace to which the agents will report
+
+Set-AzSecurityWorkspaceSetting -Name "default" -Scope "/subscriptions/ $($subName.Id)" -WorkspaceId $workSpace.ResourceId | Out-Null
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Configure security contacts
+
+# Convert the array to a comma-separated string
+$securityEmailsString = $securityEmails -join ';'
+
+Set-AzSecurityContact -Name "default" -Email $securityEmailsString -AlertAdmin -NotifyOnAlert - | Out-Null
+
+Write-Host ($writeEmptyLine + "# Security contact details defined" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
