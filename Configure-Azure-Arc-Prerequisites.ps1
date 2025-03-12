@@ -119,7 +119,7 @@ $rgNameManagement = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpo
 $rgNameEsu = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + $purpose + "-" + $esuAbbreviation + "-" + $inventoryNumbering.ToString("D2")
 
 # Log Analytics workspace
-$logAnalyticsWorkSpaceName = $logAnalyticsAbbreviation + "-" + "hub" + "-" + $companyShortName + "-" + $inventoryNumbering.ToString("D2")
+$logAnalyticsWorkSpaceName = $logAnalyticsAbbreviation + "-" + "hub" + "-" + $companyShortName + "-" + "01"
 
 # Tags
 $tagSpokeName = "Env" # The environment tag name you want to use.
@@ -213,7 +213,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcServers
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcServers -LockNotes "Prevent $rgNameArcServers from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcServers available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -236,7 +236,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcKubernetes
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcKubernetes -LockNotes "Prevent $rgNameArcKubernetes from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcKubernetes available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -259,7 +259,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcAzureLocal
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcAzureLocal -LockNotes "Prevent $rgNameArcAzureLocal from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcAzureLocal available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -282,7 +282,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcVSphere
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcVSphere -LockNotes "Prevent $rgNameArcVSphere from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcVSphere available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -305,7 +305,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcScvmm
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcScvmm -LockNotes "Prevent $rgNameArcScvmm from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcScvmm available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -328,7 +328,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcSqlServers
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcSqlServers -LockNotes "Prevent $rgNameArcSqlServers from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcSqlServers available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -351,7 +351,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcSqlManagedInstance
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcSqlManagedInstance -LockNotes "Prevent $rgNameArcSqlManagedInstance from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcSqlManagedInstance available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -374,7 +374,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcPostgreSql
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcPostgreSql -LockNotes "Prevent $rgNameArcPostgreSql from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcPostgreSql available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -397,7 +397,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameArcDataControllers
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameArcDataControllers -LockNotes "Prevent $rgNameArcDataControllers from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameArcDataControllers available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -420,7 +420,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameManagement
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameManagement -LockNotes "Prevent $rgNameManagement from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameManagement available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -443,7 +443,7 @@ $lock = Get-AzResourceLock -ResourceGroupName $rgNameEsu
 
 if ($null -eq $lock){
     New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameEsu -LockNotes "Prevent $rgNameEsu from deletion" -Force | Out-Null
-    } 
+} 
 
 Write-Host ($writeEmptyLine + "# Resource group $rgNameEsu available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
