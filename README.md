@@ -22,6 +22,6 @@ Currently this repository holds the following scritps:
 
   More information about this PowerShell script to install Windows Management Framework 5.1 on a Windows Server 2008 R2 SP1 as required software to be able to onboard this server into Azure Arc can be found on my blog: https://wmatthyssen.com/2023/11/16/azure-arc-onboard-a-windows-server-2008-r2-sp1/
   
-- **Install-Azure-Arc-software-requirements-on-W2K8-R2-SP1.ps1**
+- **Create-Azure-Windows-VM-with-VNet-and-RG-for-Azure-Arc-learning.ps1**
 
-  More information about this PowerShell script to install Windows Management Framework 5.1 on a Windows Server 2008 R2 SP1 as required software to be able to onboard this server into Azure Arc can be found on my blog: https://wmatthyssen.com/2023/11/16/azure-arc-onboard-a-windows-server-2008-r2-sp1/
+  More information about this PowerShell script used to create an Azure Windows VM with a VNet and subnet, specifically for learning and testing with Azure Arc can be found on my blog: https://wmatthyssen.com/2023/11/16/azure-arc-onboard-a-windows-server-2008-r2-sp1/
