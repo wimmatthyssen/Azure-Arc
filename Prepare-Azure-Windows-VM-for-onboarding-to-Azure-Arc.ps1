@@ -28,7 +28,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 .LINK
 
-
+https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
