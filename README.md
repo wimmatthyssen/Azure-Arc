@@ -24,4 +24,8 @@ Currently this repository holds the following scritps:
   
 - **Create-Azure-Windows-VM-with-VNet-and-RG-for-Azure-Arc-learning.ps1**
 
-  More information about this PowerShell script used to create an Azure Windows VM with a VNet and subnet, specifically for learning and testing with Azure Arc can be found on my blog: https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
+  More information about this Azure PowerShell script used to create an Azure Windows VM with a VNet and subnet, specifically for learning and testing with Azure Arc can be found on my blog: https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
+
+- **Prepare-Azure-Windows-VM-for-onboarding-to-Azure-Arc.ps1**
+
+  More information about this PowerShell script used to prepare an Azure Windows VM for onboarding to Azure Arc, specifically for learning and testing can be found on my blog: https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
