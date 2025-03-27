@@ -30,5 +30,3 @@ Currently this repository holds the following scritps:
 
   More information about this PowerShell script used to prepare an Azure Windows VM for onboarding to Azure Arc, specifically for learning and testing can be found on my blog: https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
 
-  <a href="https://example.com" target="_blank" rel="noopener noreferrer">Open in New Tab</a>
-
