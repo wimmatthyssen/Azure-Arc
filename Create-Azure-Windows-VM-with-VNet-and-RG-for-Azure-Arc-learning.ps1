@@ -45,7 +45,7 @@ Example 2: .\Create-Azure-Windows-VM-with-VNet-and-RG-for-Azure-Arc-Learning.ps1
 
 .LINK
 
-
+https://wmatthyssen.com/2025/02/24/azure-arc-using-an-azure-windows-vm-as-an-arc-enabled-server-for-learning-and-training/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
