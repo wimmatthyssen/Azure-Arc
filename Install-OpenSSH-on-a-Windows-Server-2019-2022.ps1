@@ -39,6 +39,9 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 ## Variables
 
+# Dynamic variables - Please change the values if needed to fit your environment.
+$firewallRuleName = "OpenSSH-Server-In"  # Variable for the firewall rule name
+
 Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null
 $foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
@@ -72,7 +75,7 @@ if ($isAdministrator -eq $false)
 ## Install OpenSSH Server.
 
 try {
-    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction Stop
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction Stop | Out-Null 
     Write-Host ($writeEmptyLine + "# OpenSSH Server installed" + $writeSeperatorSpaces + $global:currenttime)`
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
@@ -86,7 +89,7 @@ try {
 ## Install OpenSSH Client.
 
 try {
-    Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0 -ErrorAction Stop
+    Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0 -ErrorAction Stop | Out-Null 
     Write-Host ($writeEmptyLine + "# OpenSSH Client installed" + $writeSeperatorSpaces + $global:currenttime)`
     -foregroundcolor $foregroundColor2 $writeEmptyLine
 } catch {
@@ -117,9 +120,19 @@ try {
 ## Allow OpenSSH through the Windows Firewall.
 
 try {
-    New-NetFirewallRule -Name OpenSSH-Server-In -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
-    Write-Host ($writeEmptyLine + "# Windows Firewall configured for OpenSSH" + $writeSeperatorSpaces + $global:currenttime)`
-    -foregroundcolor $foregroundColor2 $writeEmptyLine
+    # Check if the firewall rule already exists
+    $firewallRule = Get-NetFirewallRule -Name $firewallRuleName -ErrorAction SilentlyContinue
+
+    if ($null -eq $firewallRule) {
+        # Rule does not exist, create it
+        New-NetFirewallRule -Name $firewallRuleName -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
+        Write-Host ($writeEmptyLine + "# Windows Firewall rule created and configured for OpenSSH" + $writeSeperatorSpaces + $global:currenttime)`
+        -foregroundcolor $foregroundColor2 $writeEmptyLine
+    } else {
+        # Rule already exists
+        Write-Host ($writeEmptyLine + "# Windows Firewall rule already exists and is configured for OpenSSH" + $writeSeperatorSpaces + $global:currenttime)`
+        -foregroundcolor $foregroundColor2 $writeEmptyLine
+    }
 } catch {
     Write-Host ($writeEmptyLine + "# Failed to configure Windows Firewall for OpenSSH: $($_.Exception.Message)" + $writeSeperatorSpaces + $global:currenttime)`
     -foregroundcolor $foregroundColor3 $writeEmptyLine
