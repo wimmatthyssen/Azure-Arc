@@ -32,5 +32,5 @@ Currently this repository holds the following scritps:
 
 - **Remove-Azure-Arc-Connected-Machine-agent-Windows.ps1**
 
-  More information about this PowerShell script used to prepare an Azure Windows VM for onboarding to Azure Arc, specifically for learning and testing can be found on my blog: https://wmatthyssen.com/2025/06/30/azure-arc-uninstall-the-connected-machine-agent-and-clean-up-related-resources-on-windows-using-a-powershell-script/
+  More information about this PowerShell script, which removes the Azure Arc Connected Machine agent from a Windows machine and cleans up all related folders, files, registry keys, other agents, and configuration files, can be found on my blog: https://wmatthyssen.com/2025/06/30/azure-arc-uninstall-the-connected-machine-agent-and-clean-up-related-resources-on-windows-using-a-powershell-script/
 
