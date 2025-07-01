@@ -81,7 +81,8 @@ $processes = @(
     "azcmagent",
     "HybridWorkerService",
     "agentwrap",
-    "change_tracking_service",
+    "change_tracking_service"
+    "change_tracking_agent_windows_amd64",
     "UpdateManagementActionExec",
     "AMAExtHealthMonitor",
     "MonAgentCore",
