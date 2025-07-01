@@ -37,7 +37,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 .LINK
 
-
+https://wmatthyssen.com/2025/06/30/azure-arc-uninstall-the-connected-machine-agent-and-clean-up-related-resources-on-windows-using-a-powershell-script/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
