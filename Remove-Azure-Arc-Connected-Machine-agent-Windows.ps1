@@ -78,7 +78,6 @@ if ($isAdministrator -eq $false) {
 
 # Define processes to stop
 $processes = @(
-    "azcmagent",
     "HybridWorkerService",
     "agentwrap",
     "change_tracking_service"
@@ -89,7 +88,8 @@ $processes = @(
     "MonAgentHost",
     "MonAgentLauncher",
     "MonAgentManager",
-    "MicrosoftDependencyAgent"    
+    "MicrosoftDependencyAgent",
+    "azcmagent"    
 )
 
 # Attempt to stop each process
