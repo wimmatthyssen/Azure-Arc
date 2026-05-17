@@ -37,7 +37,7 @@ Example .\Enable-HardenedArcScvmmGuestManagement.ps1 -vmName "swpvm023" -passwor
  
 .LINK
  
-https://wmatthyssen.com
+https://wmatthyssen.com/2026/05/18/azure-arc-enabled-scvmm-securing-the-azure-connected-machine-agent-during-onboarding-with-powershell/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
