@@ -34,3 +34,7 @@ Currently this repository holds the following scritps:
 
   More information about this PowerShell script, which removes the Azure Arc Connected Machine agent from a Windows machine and cleans up all related folders, files, registry keys, other agents, and configuration files, can be found on my blog: https://wmatthyssen.com/2025/06/30/azure-arc-uninstall-the-connected-machine-agent-and-clean-up-related-resources-on-windows-using-a-powershell-script/
 
+- **Enable-HardenedArcScvmmGuestManagement.ps1**
+
+  More information about this PowerShell script to enable guest management on an Arc-enabled SCVMM VM and harden the Azure Connected Machine agent during onboarding, can be found on my blog: https://wmatthyssen.com/2026/05/18/azure-arc-enabled-scvmm-securing-the-azure-connected-machine-agent-during-onboarding-with-powershell/
+
