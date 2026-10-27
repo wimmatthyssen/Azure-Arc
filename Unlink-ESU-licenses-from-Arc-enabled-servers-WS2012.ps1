@@ -31,7 +31,7 @@ Example: .\Unlink-ESU-licenses-from-Arc-enabled-servers-WS2012.ps1
  
 .LINK
  
-https://wmatthyssen.com/2025/12/22/how-to-list-and-export-available-azure-vm-images-by-generation-and-region-with-an-azure-powershell-script/
+https://wmatthyssen.com/2026/10/14/azure-arc-windows-server-2012-esus-have-ended-what-to-do-next/
 #>
  
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
