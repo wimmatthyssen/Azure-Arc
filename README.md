@@ -40,5 +40,4 @@ Currently this repository holds the following scritps:
 
 - **Unlink-ESU-licenses-from-Arc-enabled-servers-WS2012.ps1**
 
-  More information about this PowerShell script to enable guest management on an Arc-enabled SCVMM VM and harden the Azure Connected Machine agent during onboarding, can be found on my blog: https://wmatthyssen.com/2026/05/18/azure-arc-enabled-scvmm-securing-the-azure-connected-machine-agent-during-onboarding-with-powershell/
-
+  More information about this PowerShell script to unlink ESU Licenses from Azure Arc-Enabled Servers, can be found on my blog: https://wmatthyssen.com/2026/10/14/azure-arc-windows-server-2012-esus-have-ended-what-to-do-next/
